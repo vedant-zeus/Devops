@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>DevOps Pipeline Status Dashboard</title>
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #0f172a;
+        color: #ffffff;
+        text-align: center;
+        padding-top: 40px;
+      }
+
+      .dashboard {
+        background-color: #1e293b;
+        width: 420px;
+        margin: auto;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px #000;
+      }
+
+      h1 {
+        color: #38bdf8;
+      }
+
+      .status {
+        color: #22c55e;
+        font-weight: bold;
+      }
+
+      .badge {
+        margin-top: 15px;
+        display: inline-block;
+        background-color: #22c55e;
+        color: black;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-weight: bold;
+      }
+
+      .item {
+        margin: 12px 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>🚦 DevOps Pipeline Status</h1>
+
+    <div class="dashboard">
+      <div class="item"><b>Project Name:</b> devops-webapp</div>
+      <div class="item"><b>Environment:</b> Production</div>
+      <div class="item">
+        <b>Build Status:</b> <span class="status">SUCCESS</span>
+      </div>
+      <div class="item"><b>Version:</b> v1.0</div>
+      <div class="item"><b>Last Deployment:</b> Manual (Initial Setup)</div>
+
+      <div class="badge">Deployed via CI/CD</div>
+    </div>
+  </body>
+</html>
