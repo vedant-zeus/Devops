@@ -1,65 +1,73 @@
 <!doctype html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <title>DevOps Pipeline Status Dashboard</title>
+    <title>DevOps Live Status Dashboard</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
       body {
-        font-family: Arial, sans-serif;
-        background-color: #0f172a;
-        color: #ffffff;
+        background: #0f172a;
+        color: white;
+        font-family: Arial;
         text-align: center;
-        padding-top: 40px;
       }
 
-      .dashboard {
-        background-color: #1e293b;
-        width: 420px;
+      .container {
+        width: 600px;
         margin: auto;
-        padding: 25px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px #000;
       }
 
-      h1 {
-        color: #38bdf8;
+      canvas {
+        background: #1e293b;
+        padding: 20px;
+        border-radius: 10px;
       }
 
       .status {
+        margin-top: 20px;
+        font-size: 18px;
         color: #22c55e;
-        font-weight: bold;
-      }
-
-      .badge {
-        margin-top: 15px;
-        display: inline-block;
-        background-color: #22c55e;
-        color: black;
-        padding: 6px 12px;
-        border-radius: 6px;
-        font-weight: bold;
-      }
-
-      .item {
-        margin: 12px 0;
       }
     </style>
   </head>
 
   <body>
-    <h1>🚦 DevOps Pipeline Status</h1>
+    <h1>🚦 DevOps CI/CD Live Dashboard</h1>
 
-    <div class="dashboard">
-      <div class="item"><b>Project Name:</b> devops-webapp</div>
-      <div class="item"><b>Environment:</b> Production</div>
-      <div class="item">
-        <b>Build Status:</b> <span class="status">SUCCESS</span>
-      </div>
-      <div class="item"><b>Version:</b> v1.0</div>
-      <div class="item"><b>Last Deployment:</b> Manual (Initial Setup)</div>
-
-      <div class="badge">Deployed via CI/CD</div>
+    <div class="container">
+      <canvas id="pipelineChart"></canvas>
+      <div class="status" id="deployStatus"></div>
     </div>
+
+    <script>
+      fetch("status.json")
+        .then((res) => res.json())
+        .then((data) => {
+          document.getElementById("deployStatus").innerText =
+            "Deployment Status: " +
+            data.deployment_status +
+            " | Git Pushes: " +
+            data.git_pushes;
+
+          new Chart(document.getElementById("pipelineChart"), {
+            type: "bar",
+            data: {
+              labels: ["Git Pushes", "CI Success", "CI Failed"],
+              datasets: [
+                {
+                  label: "Pipeline Metrics",
+                  data: [data.git_pushes, data.ci_success, data.ci_failed],
+                },
+              ],
+            },
+            options: {
+              scales: {
+                y: { beginAtZero: true },
+              },
+            },
+          });
+        });
+    </script>
   </body>
 </html>

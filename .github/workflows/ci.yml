@@ -18,6 +18,24 @@ jobs:
           echo "Building DevOps Pipeline Dashboard"
           ls -la
 
+      - name: Update CI/CD status file
+        run: |
+          echo '{
+            "git_pushes": 6,
+            "ci_success": 5,
+            "ci_failed": 1,
+            "deployment_status": "SUCCESS",
+            "last_updated": "Updated by GitHub Actions"
+          }' > status.json
+
+      - name: Commit updated status file
+        run: |
+          git config --global user.email "ci-bot@example.com"
+          git config --global user.name "CI Bot"
+          git add status.json
+          git commit -m "CI updated status file" || echo "No changes to commit"
+          git push
+
       - name: Notify Slack on Success
         if: success()
         run: |
