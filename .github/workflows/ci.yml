@@ -1,4 +1,4 @@
-name: CI - DevOps Dashboard
+name: CI with ChatOps Notifications
 
 on:
   push:
@@ -13,10 +13,21 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v4
 
-      - name: Build static website
+      - name: Build static dashboard
         run: |
-          echo "Building DevOps Dashboard..."
+          echo "Building DevOps Pipeline Dashboard"
           ls -la
 
-      - name: CI Status
-        run: echo "CI Pipeline executed successfully"
+      - name: Notify Slack on Success
+        if: success()
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"✅ CI Build Successful for devops-webapp"}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Notify Slack on Failure
+        if: failure()
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"❌ CI Build Failed for devops-webapp"}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
