@@ -1,0 +1,22 @@
+name: CI - DevOps Dashboard
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Build static website
+        run: |
+          echo "Building DevOps Dashboard..."
+          ls -la
+
+      - name: CI Status
+        run: echo "CI Pipeline executed successfully"
