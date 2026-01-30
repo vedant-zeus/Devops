@@ -18,7 +18,7 @@ jobs:
           echo "Building DevOps Pipeline Dashboard"
           ls -la
 
-      - name: Update CI/CD status file
+      - name: Generate CI/CD status file
         run: |
           echo '{
             "git_pushes": 6,
@@ -28,24 +28,9 @@ jobs:
             "last_updated": "Updated by GitHub Actions"
           }' > status.json
 
-      - name: Commit updated status file
+      - name: Notify Slack (always)
+        if: always()
         run: |
-          git config --global user.email "ci-bot@example.com"
-          git config --global user.name "CI Bot"
-          git add status.json
-          git commit -m "CI updated status file" || echo "No changes to commit"
-          git push
-
-      - name: Notify Slack on Success
-        if: success()
-        run: |
-          curl -X POST -H 'Content-type: application/json' \
-          --data '{"text":"✅ CI Build Successful for devops-webapp"}' \
-          ${{ secrets.SLACK_WEBHOOK_URL }}
-
-      - name: Notify Slack on Failure
-        if: failure()
-        run: |
-          curl -X POST -H 'Content-type: application/json' \
-          --data '{"text":"❌ CI Build Failed for devops-webapp"}' \
+          curl -X POST -H "Content-type: application/json" \
+          --data "{\"text\":\"🚀 CI Pipeline executed for devops-webapp\"}" \
           ${{ secrets.SLACK_WEBHOOK_URL }}
