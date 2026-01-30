@@ -1,4 +1,4 @@
-name: CI with ChatOps Notifications
+name: CI with Live Dashboard
 
 on:
   push:
@@ -10,27 +10,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build static dashboard
-        run: |
-          echo "Building DevOps Pipeline Dashboard"
-          ls -la
+      - name: Build
+        run: echo "CI running"
 
-      - name: Generate CI/CD status file
+      - name: Set CI success variables
+        if: success()
         run: |
-          echo '{
-            "git_pushes": 6,
-            "ci_success": 5,
-            "ci_failed": 1,
-            "deployment_status": "SUCCESS",
-            "last_updated": "Updated by GitHub Actions"
-          }' > status.json
+          echo "CI_STATUS=SUCCESS" >> $GITHUB_ENV
+          echo "CI_SUCCESS=1" >> $GITHUB_ENV
 
-      - name: Notify Slack (always)
+      - name: Set CI failure variables
+        if: failure()
+        run: |
+          echo "CI_STATUS=FAILED" >> $GITHUB_ENV
+          echo "CI_FAILED=1" >> $GITHUB_ENV
+
+      - name: Trigger Netlify Deploy
+        run: |
+          curl -X POST -d '{}' ${{ secrets.NETLIFY_BUILD_HOOK }}
+
+      - name: Notify Slack
         if: always()
         run: |
           curl -X POST -H "Content-type: application/json" \
-          --data "{\"text\":\"🚀 CI Pipeline executed for devops-webapp\"}" \
+          --data "{\"text\":\"🚀 CI Pipeline executed with status: $CI_STATUS\"}" \
           ${{ secrets.SLACK_WEBHOOK_URL }}
