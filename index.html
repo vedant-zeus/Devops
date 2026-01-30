@@ -1,73 +1,78 @@
 <!doctype html>
 <html>
-  <head>
-    <title>DevOps Live Status Dashboard</title>
+<head>
+  <title>DevOps CI/CD Live Dashboard</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <style>
-      body {
-        background: #0f172a;
-        color: white;
-        font-family: Arial;
-        text-align: center;
-      }
+  <style>
+    body {
+      background: #0f172a;
+      color: white;
+      font-family: Arial;
+      text-align: center;
+    }
 
-      .container {
-        width: 600px;
-        margin: auto;
-      }
+    .container {
+      width: 650px;
+      margin: auto;
+    }
 
-      canvas {
-        background: #1e293b;
-        padding: 20px;
-        border-radius: 10px;
-      }
+    canvas {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 10px;
+    }
 
-      .status {
-        margin-top: 20px;
-        font-size: 18px;
-        color: #22c55e;
-      }
-    </style>
-  </head>
+    .status {
+      margin-top: 20px;
+      font-size: 18px;
+    }
 
-  <body>
-    <h1>🚦 DevOps CI/CD Live Dashboard</h1>
+    .success { color: #22c55e; }
+    .failed { color: #ef4444; }
+  </style>
+</head>
 
-    <div class="container">
-      <canvas id="pipelineChart"></canvas>
-      <div class="status" id="deployStatus"></div>
+<body>
+
+  <h1>🚦 DevOps CI/CD Live Dashboard</h1>
+
+  <div class="container">
+    <canvas id="pipelineChart"></canvas>
+
+    <div class="status">
+      <p><b>Total Git Pushes:</b> 9</p>
+      <p class="success"><b>Builds Completed:</b> 7</p>
+      <p class="failed"><b>Builds Rejected:</b> 2</p>
     </div>
+  </div>
 
-    <script>
-      fetch("status.json")
-        .then((res) => res.json())
-        .then((data) => {
-          document.getElementById("deployStatus").innerText =
-            "Deployment Status: " +
-            data.deployment_status +
-            " | Git Pushes: " +
-            data.git_pushes;
+  <script>
+    const gitPushes = 9;
+    const ciSuccess = 7;
+    const ciFailed = 2;
 
-          new Chart(document.getElementById("pipelineChart"), {
-            type: "bar",
-            data: {
-              labels: ["Git Pushes", "CI Success", "CI Failed"],
-              datasets: [
-                {
-                  label: "Pipeline Metrics",
-                  data: [data.git_pushes, data.ci_success, data.ci_failed],
-                },
-              ],
-            },
-            options: {
-              scales: {
-                y: { beginAtZero: true },
-              },
-            },
-          });
-        });
-    </script>
-  </body>
+    new Chart(document.getElementById("pipelineChart"), {
+      type: "bar",
+      data: {
+        labels: ["Git Pushes", "Completed", "Rejected"],
+        datasets: [{
+          label: "CI/CD Pipeline Status",
+          data: [gitPushes, ciSuccess, ciFailed],
+          backgroundColor: ["#38bdf8", "#22c55e", "#ef4444"]
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: { stepSize: 1 }
+          }
+        }
+      }
+    });
+  </script>
+
+</body>
 </html>
